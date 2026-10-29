@@ -134,3 +134,42 @@ FROM dbo.Payment
 WHERE TransactionDate >= '2025-01-02'
   AND TransactionDate <  '2025-01-03';
 GO
+
+SELECT *
+FROM dbo.Payment
+WHERE CustomerId = 999999;
+
+SELECT
+    name,
+    is_auto_update_stats_on
+FROM sys.databases
+WHERE name = 'BackendPerformanceLab';
+
+DBCC SHOW_STATISTICS
+(
+    'dbo.Payment',
+    'IX_Payment_CustomerId'
+);
+
+SELECT *
+FROM dbo.Payment
+WHERE CustomerId = 999999
+OPTION (RECOMPILE);
+
+UPDATE STATISTICS dbo.Payment IX_Payment_CustomerId
+WITH FULLSCAN;
+
+DELETE FROM dbo.Payment
+WHERE CustomerId = 999999;
+
+UPDATE STATISTICS dbo.Payment
+WITH FULLSCAN;
+
+ALTER DATABASE BackendPerformanceLab
+SET AUTO_UPDATE_STATISTICS ON;
+
+SELECT
+    name,
+    is_auto_update_stats_on
+FROM sys.databases
+WHERE name = 'BackendPerformanceLab';
